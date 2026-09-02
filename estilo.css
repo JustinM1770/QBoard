@@ -1,0 +1,112 @@
+/* CRM — identidad QBoard (negro/blanco, DM Sans, minimalista) */
+:root{
+  --bg:#0a0a0a; --card:#141416; --card2:#1b1c20; --hover:#202126;
+  --ink:#fafafa; --muted:rgba(255,255,255,.55); --faint:rgba(255,255,255,.35);
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.16);
+  --primary:#fafafa; --primary-ink:#0a0a0a;
+  /* colores de estado (discretos sobre oscuro) */
+  --azul:#60a5fa; --verde:#4ade80; --morado:#a78bfa; --naranja:#fbbf24; --rojo:#f87171;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"DM Sans",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink)}
+button{font:inherit;cursor:pointer}
+input,select,textarea{font:inherit}
+.oculto{display:none!important}
+.display{font-family:"Bricolage Grotesque","DM Sans",sans-serif;letter-spacing:-.02em}
+
+/* logo Qb */
+.qb{width:32px;height:32px;border-radius:8px;background:var(--ink);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.qb b{color:var(--bg);font-weight:800;font-size:15px;font-family:"Bricolage Grotesque",sans-serif}
+
+/* ---------- LOGIN ---------- */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px}
+.login-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:38px 32px;width:370px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .t b{font-size:17px;font-weight:800} .brand .t small{display:block;font-size:10px;letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
+.login-card h2{font-family:"Bricolage Grotesque",sans-serif;font-size:22px;letter-spacing:-.03em;margin:22px 0 4px}
+.login-card .sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:14px 0 6px}
+input,select,textarea{width:100%;padding:11px 13px;border:1px solid var(--line2);border-radius:13px;background:#0e0e10;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(255,255,255,.4)}
+.btn{background:var(--primary);color:var(--primary-ink);border:none;border-radius:13px;padding:12px 16px;font-weight:800;width:100%;margin-top:20px}
+.btn:hover{opacity:.9}
+.btn.sm{width:auto;padding:9px 15px;margin:0;font-size:13px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line2)}
+.err{color:var(--rojo);font-size:13px;margin-top:12px;text-align:center}
+
+/* ---------- LAYOUT ---------- */
+.app{display:flex;min-height:100vh}
+.side{width:224px;background:#0c0c0e;border-right:1px solid var(--line);flex-shrink:0;padding:16px 12px;display:flex;flex-direction:column;gap:3px}
+.side .brand{margin:6px 8px 22px}
+.side a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:600}
+.side a:hover{background:var(--hover);color:var(--ink)}
+.side a.activo{background:rgba(255,255,255,.1);color:var(--ink)}
+.side .salir{margin-top:auto;color:var(--faint)}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.top{border-bottom:1px solid var(--line);padding:0 26px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.top .user{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:9px}
+.top .av{width:28px;height:28px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.content{padding:26px;flex:1;max-width:1100px}
+h1{font-family:"Bricolage Grotesque",sans-serif;font-size:24px;letter-spacing:-.03em;margin-bottom:3px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:16px}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:16px}
+.kpi .lbl{font-size:12px;color:var(--muted)}
+.kpi .num{font-family:"Bricolage Grotesque",sans-serif;font-size:30px;font-weight:800;margin:5px 0;letter-spacing:-.02em}
+.kpi .num.v{color:var(--verde)} .kpi .num.n{color:var(--naranja)}
+.kpi .foot{font-size:11px;color:var(--faint)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:18px}
+.card h3{font-size:14px;margin-bottom:15px;font-weight:700}
+
+/* barra de acciones + tabla */
+.barra{display:flex;gap:10px;align-items:center;margin-bottom:15px;flex-wrap:wrap}
+.barra input{width:280px} .barra select{width:180px} .barra .sp{flex:1}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--faint);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+tbody tr:hover{background:var(--hover)}
+.acc{color:var(--faint);cursor:pointer;margin-right:10px}.acc:hover{color:var(--ink)}
+
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.e-Prospecto{background:rgba(96,165,250,.14);color:var(--azul)}
+.e-Activo{background:rgba(74,222,128,.14);color:var(--verde)}
+.e-Frecuente{background:rgba(167,139,250,.16);color:var(--morado)}
+.e-Inactivo{background:rgba(255,255,255,.08);color:var(--faint)}
+.st-activo{color:var(--verde);font-weight:600}.st-inactivo{color:var(--naranja);font-weight:600}
+
+/* gráficas */
+.charts{display:flex;gap:22px;align-items:center}
+.donut{width:150px;height:150px;border-radius:50%;flex-shrink:0}
+.donut .hole{width:150px;height:150px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.legend{display:flex;flex-direction:column;gap:9px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:9px}
+.bars{display:flex;align-items:flex-end;gap:20px;height:150px;padding:0 6px}
+.bars .b{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end}
+.bars .b .barra-v{width:66%;border-radius:7px 7px 0 0;min-height:3px}
+.bars .b small{font-size:11px;color:var(--muted)}
+.riesgo{display:flex;flex-direction:column}
+.riesgo .r{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.riesgo .r small{color:var(--naranja)}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal{background:var(--card);border:1px solid var(--line2);border-radius:18px;padding:22px;width:430px;max-width:100%;max-height:90vh;overflow:auto}
+.modal h3{font-family:"Bricolage Grotesque",sans-serif;font-size:18px;letter-spacing:-.02em;margin-bottom:14px}
+.modal .row{display:flex;gap:10px}.modal .row>*{flex:1}
+.modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+
+/* timeline + detalle */
+.tl .item{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.tl .ic{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#0a0a0a}
+.ic-llamada{background:var(--verde)}.ic-correo{background:var(--azul)}.ic-reunion{background:var(--morado)}
+.tl .item .txt{flex:1}.tl .item .txt b{font-size:14px}.tl .item .txt p{font-size:13px;color:var(--muted);margin-top:2px}
+.tl .item .fecha{font-size:12px;color:var(--faint);white-space:nowrap}
+.detalle-info{display:grid;grid-template-columns:1fr 1fr;gap:13px 20px;font-size:14px}
+.detalle-info .lbl{color:var(--faint);font-size:12px;margin-bottom:2px}
+.volver{color:var(--muted);font-size:13px;cursor:pointer;margin-bottom:12px;display:inline-block}
+.volver:hover{color:var(--ink)}
