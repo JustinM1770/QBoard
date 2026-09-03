@@ -24,6 +24,7 @@ async function api(path, method = 'GET', data = null) {
 const pill = e => `<span class="pill e-${esc(e)}">${esc(e)}</span>`;
 const estadoTxt = s => `<span class="st-${esc(s)}">${s === 'activo' ? 'Activo' : 'Inactivo'}</span>`;
 const fmtFecha = f => (f || '').replace('T', ' ').slice(0, 16);
+const estrellas = n => '★'.repeat(Math.round(n || 0)) + '☆'.repeat(5 - Math.round(n || 0));
 
 // --- Navegación ---
 const VISTAS = ['dashboard', 'clientes', 'detalle', 'actividad', 'reportes'];
@@ -135,6 +136,7 @@ async function borrarCliente(id) {
 async function detalleView(id) {
   const c = await api('clientes.php?id=' + id);
   const hist = await api('interacciones.php?cliente_id=' + id);
+  const ev = await api('evaluaciones.php?cliente_id=' + id);
   const icoTxt = { llamada:'L', correo:'C', reunion:'R' };
   $('#vista-detalle').innerHTML = `
     <span class="volver" onclick="mostrar('clientes')">← Volver a clientes</span>
@@ -160,6 +162,17 @@ async function detalleView(id) {
         <div class="item"><div class="ic ic-${i.tipo}">${icoTxt[i.tipo]||'?'}</div>
           <div class="txt"><b>${i.tipo[0].toUpperCase()+i.tipo.slice(1)}</b><p>${esc(i.descripcion)}</p><p style="color:var(--faint)">Usuario: ${esc(i.usuario)}</p></div>
           <div class="fecha">${fmtFecha(i.fecha)}</div></div>`).join('') : '<p class="sub">Aún no hay interacciones.</p>'}</div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h3 style="margin:0">Evaluaciones de la relación &nbsp;<span style="color:var(--naranja)">${estrellas(ev.promedio)}</span> <span style="color:var(--muted);font-weight:400;font-size:13px">${ev.promedio}/5</span></h3>
+        <button class="btn sm" onclick="modalEvaluacion(${c.id})">+ Nueva evaluación</button>
+      </div>
+      ${ev.evaluaciones.length ? ev.evaluaciones.map(e => `
+        <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line)">
+          <div><b style="color:var(--naranja)">${estrellas(e.puntuacion)}</b><p style="font-size:13px;color:var(--muted);margin-top:2px">${esc(e.comentario)}</p><p style="font-size:12px;color:var(--faint)">${esc(e.usuario)}</p></div>
+          <div style="font-size:12px;color:var(--faint);white-space:nowrap">${fmtFecha(e.fecha)}</div>
+        </div>`).join('') : '<p class="sub">Sin evaluaciones aún.</p>'}
     </div>`;
 }
 
@@ -237,7 +250,7 @@ async function guardarInteraccion(clienteId) {
 }
 function modalEtapa(c) {
   $('#modal-root').innerHTML = `<div class="modal-bg" onclick="if(event.target===this)cerrarModal()"><div class="modal">
-    <h3>Editar etapa CRM</h3><p class="sub">${''}Nueva etapa del cliente</p>
+    <h3>Editar etapa CRM</h3><p class="sub">Nueva etapa del cliente</p>
     <label>Etapa</label><select id="et_val">${['Prospecto','Activo','Frecuente','Inactivo'].map(e=>`<option${c.etapa_crm===e?' selected':''}>${e}</option>`).join('')}</select>
     <div class="actions"><button class="btn ghost sm" onclick="cerrarModal()">Cancelar</button>
       <button class="btn sm" onclick="guardarEtapa(${c.id})">Guardar cambios</button></div>
@@ -246,6 +259,20 @@ function modalEtapa(c) {
 async function guardarEtapa(id) {
   await api('clientes.php?id=' + id + '&accion=etapa', 'PUT', { etapa_crm:$('#et_val').value });
   cerrarModal(); detalleView(id);
+}
+function modalEvaluacion(clienteId) {
+  $('#modal-root').innerHTML = `<div class="modal-bg" onclick="if(event.target===this)cerrarModal()"><div class="modal">
+    <h3>Nueva evaluación</h3>
+    <label>Puntuación</label>
+    <select id="ev_p"><option value="5">5 — Excelente</option><option value="4">4 — Buena</option><option value="3">3 — Regular</option><option value="2">2 — Baja</option><option value="1">1 — Mala</option></select>
+    <label>Comentario</label><textarea id="ev_c" rows="3" placeholder="¿Cómo va la relación con este cliente?"></textarea>
+    <div class="actions"><button class="btn ghost sm" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn sm" onclick="guardarEvaluacion(${clienteId})">Guardar</button></div>
+  </div></div>`;
+}
+async function guardarEvaluacion(clienteId) {
+  await api('evaluaciones.php', 'POST', { cliente_id:clienteId, usuario_id:USER.id, puntuacion:+$('#ev_p').value, comentario:$('#ev_c').value });
+  cerrarModal(); detalleView(clienteId);
 }
 
 // arranque
