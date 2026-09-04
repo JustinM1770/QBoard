@@ -1,14 +1,10 @@
 <?php
 /**
- * Integrante 3 · Justin — Login (Día 1)
- *
- *   POST /api/auth.php   body JSON: { "correo": "...", "password": "..." }
- *   ->  200  { "token": "...", "usuario": { "id", "nombre", "rol" } }
- *   ->  401  { "error": "Credenciales inválidas" }
- *
- *  Prueba:  correo = admin@crm.mx   ·   password = admin123
+ * Login — Integrante 3 (Justin).
+ *   POST auth.php   body JSON: { "correo": "...", "password": "..." }
+ *   ->  { "token": "...", "usuario": { "id", "nombre", "rol" } }
+ *   Prueba:  admin@crm.mx / admin123
  */
-
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -23,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Datos que manda el formulario de login
 $body     = json_decode(file_get_contents('php://input'), true) ?: [];
 $correo   = trim($body['correo'] ?? '');
 $password = $body['password'] ?? '';
@@ -35,12 +30,10 @@ if ($correo === '' || $password === '') {
 }
 
 try {
-    // Buscar el usuario por correo
     $stmt = db()->prepare("SELECT id, nombre, correo, password_hash, rol FROM usuarios WHERE correo = ? LIMIT 1");
     $stmt->execute([$correo]);
     $usuario = $stmt->fetch();
 
-    // Verificar contraseña con el hash guardado
     if (!$usuario || !password_verify($password, $usuario['password_hash'])) {
         http_response_code(401);
         echo json_encode(['error' => 'Credenciales inválidas']);
@@ -53,11 +46,7 @@ try {
 
     echo json_encode([
         'token'   => $token,
-        'usuario' => [
-            'id'     => (int)$usuario['id'],
-            'nombre' => $usuario['nombre'],
-            'rol'    => $usuario['rol'],
-        ],
+        'usuario' => ['id' => (int)$usuario['id'], 'nombre' => $usuario['nombre'], 'rol' => $usuario['rol']],
     ], JSON_UNESCAPED_UNICODE);
 
 } catch (Throwable $e) {
