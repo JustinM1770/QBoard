@@ -1,6 +1,6 @@
 -- ============================================================
---  Integrante 1 · Jose Luis — Tabla CLIENTES (Día 1)
---  Ejecutar:  mysql -u root -p < db/clientes.sql
+--  Integrante 1 (Jose Luis) — Base de datos + tabla CLIENTES
+--  Importar en phpMyAdmin.
 -- ============================================================
 CREATE DATABASE IF NOT EXISTS crm_negocios2 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE crm_negocios2;
@@ -12,10 +12,13 @@ CREATE TABLE IF NOT EXISTS clientes (
   telefono       VARCHAR(30),
   empresa        VARCHAR(120),
   fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  estado         ENUM('activo','inactivo') NOT NULL DEFAULT 'activo'
+  estado         ENUM('activo','inactivo') NOT NULL DEFAULT 'activo',
+  etapa_crm      ENUM('Prospecto','Activo','Frecuente','Inactivo') NOT NULL DEFAULT 'Prospecto'
 ) ENGINE=InnoDB;
 
--- Datos de ejemplo
-INSERT INTO clientes (nombre, correo, telefono, empresa, estado) VALUES
-  ('María López', 'maria@moda.mx',    '3311112222', 'Moda MX',   'activo'),
-  ('Juan Pérez',  'juan@textilvh.mx', '3312223333', 'Textil VH', 'activo');
+INSERT INTO clientes (nombre, correo, telefono, empresa, estado, etapa_crm) VALUES
+  ('María López','maria@talavera.com','555-123-4567','Talavera Artesanal','activo','Frecuente'),
+  ('Juan Pérez','juan@textiles.mx','555-987-6543','Textiles del Sur','activo','Prospecto'),
+  ('Ana García','ana@alebrijes.mx','555-456-7890','Alebrijes MX','activo','Frecuente'),
+  ('Carlos Ruiz','carlos@barroyfuego.com','555-321-6547','Barro y Fuego','inactivo','Inactivo'),
+  ('Luisa Morales','luisa@papelarte.mx','555-654-3210','Arte en Papel','activo','Activo');
