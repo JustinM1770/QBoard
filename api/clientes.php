@@ -1,6 +1,6 @@
 <?php
 /**
- * Clientes — CRUD + búsqueda + filtro + cambio de etapa.
+ * Clientes — CRUD + búsqueda + filtro + cambio de etapa.  (Integrante 1: Jose Luis)
  *   GET    clientes.php                      -> listar (?buscar= , ?estado= , ?etapa=)
  *   GET    clientes.php?id=1                  -> detalle
  *   POST   clientes.php                       -> crear
@@ -18,6 +18,9 @@ try {
     if ($m === 'POST') {
         $d = body();
         if (empty(trim($d['nombre'] ?? ''))) json_out(['error' => 'El nombre es obligatorio'], 400);
+        if (!empty($d['correo']) && !filter_var($d['correo'], FILTER_VALIDATE_EMAIL)) {
+            json_out(['error' => 'El correo no es válido'], 400);
+        }
         $st = db()->prepare("INSERT INTO clientes (nombre, correo, telefono, empresa, estado, etapa_crm)
                              VALUES (?,?,?,?,?,?)");
         $st->execute([
@@ -39,6 +42,10 @@ try {
     // ---- Editar ----
     if ($m === 'PUT' && $id !== null) {
         $d = body();
+        if (empty(trim($d['nombre'] ?? ''))) json_out(['error' => 'El nombre es obligatorio'], 400);
+        if (!empty($d['correo']) && !filter_var($d['correo'], FILTER_VALIDATE_EMAIL)) {
+            json_out(['error' => 'El correo no es válido'], 400);
+        }
         $st = db()->prepare("UPDATE clientes SET nombre=?, correo=?, telefono=?, empresa=?, estado=? WHERE id=?");
         $st->execute([
             trim($d['nombre'] ?? ''), trim($d['correo'] ?? ''), trim($d['telefono'] ?? ''),
