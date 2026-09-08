@@ -1,12 +1,8 @@
 <?php
 /**
- * Métricas del CRM (dashboard + reportes).
- *   GET metricas.php  ->  {
- *      total, activos, inactivos, interacciones_mes,
- *      por_tipo: {llamada, correo, reunion},
- *      por_etapa: {Prospecto, Activo, Frecuente, Inactivo},
- *      en_riesgo: [ {id, nombre, dias} ]   // sin interacción en 30+ días (o ninguna)
- *   }
+ * Métricas del CRM (dashboard + reportes) — Integrante 3 (Justin).
+ *   GET metricas.php  ->  { total, activos, inactivos, interacciones_mes,
+ *                          por_tipo, por_etapa, en_riesgo[] }
  */
 require_once __DIR__ . '/../config/cors.php';
 
@@ -33,8 +29,7 @@ try {
 
     // Clientes en riesgo: última interacción hace 30+ días, o sin interacciones
     $riesgo = $db->query("
-        SELECT c.id, c.nombre,
-               DATEDIFF(CURDATE(), MAX(i.fecha)) AS dias
+        SELECT c.id, c.nombre, DATEDIFF(CURDATE(), MAX(i.fecha)) AS dias
         FROM clientes c
         LEFT JOIN interacciones i ON i.cliente_id = c.id
         GROUP BY c.id, c.nombre
@@ -44,13 +39,9 @@ try {
     ")->fetchAll();
 
     json_out([
-        'total'             => $total,
-        'activos'           => $activos,
-        'inactivos'         => $inactivos,
-        'interacciones_mes' => $intMes,
-        'por_tipo'          => $porTipo,
-        'por_etapa'         => $porEtapa,
-        'en_riesgo'         => $riesgo,
+        'total' => $total, 'activos' => $activos, 'inactivos' => $inactivos,
+        'interacciones_mes' => $intMes, 'por_tipo' => $porTipo, 'por_etapa' => $porEtapa,
+        'en_riesgo' => $riesgo,
     ]);
 
 } catch (Throwable $e) {
