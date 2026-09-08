@@ -1,6 +1,6 @@
 <?php
 /**
- * Evaluaciones — mide la relación con cada cliente (puntuación 1-5 + comentario).
+ * Evaluaciones — Integrante 2 (Kevin). Mide la relación con cada cliente (1-5 + comentario).
  *   POST evaluaciones.php                  -> { cliente_id, usuario_id, puntuacion, comentario }
  *   GET  evaluaciones.php?cliente_id=1     -> evaluaciones de un cliente + promedio
  */

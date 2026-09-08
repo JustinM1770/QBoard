@@ -1,6 +1,6 @@
 -- ============================================================
---  Tabla EVALUACIONES (métricas CRM de la relación con el cliente)
---  Ejecutar sobre la base crm_negocios2 (después de clientes y usuarios).
+--  Integrante 2 (Kevin) — Tabla EVALUACIONES (métricas CRM de la relación)
+--  Importar DESPUES de clientes.sql y usuarios.sql.
 -- ============================================================
 USE crm_negocios2;
 
@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS evaluaciones (
   FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 ) ENGINE=InnoDB;
 
--- Datos de ejemplo
 INSERT INTO evaluaciones (cliente_id, usuario_id, puntuacion, comentario) VALUES
   (1, 1, 5, 'Excelente relación, compra frecuente y buena comunicación.'),
   (2, 2, 3, 'Interesado pero aún no concreta pedidos grandes.'),
