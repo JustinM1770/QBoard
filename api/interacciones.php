@@ -6,6 +6,7 @@
  *   GET  interacciones.php?usuario_id=1    -> "Mi actividad"
  *   GET  interacciones.php                 -> TODAS las interacciones (vista global)
  */
+// Este endpoint permite registrar y consultar el historial de interacciones del cliente.
 require_once __DIR__ . '/../config/cors.php';
 
 $m = $_SERVER['REQUEST_METHOD'];
