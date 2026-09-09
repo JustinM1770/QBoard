@@ -1,12 +1,14 @@
 <?php
+
 /**
  * Clientes — CRUD + búsqueda + filtro + cambio de etapa.  (Integrante 1: Jose Luis)
- *   GET    clientes.php                      -> listar (?buscar= , ?estado= , ?etapa=)
- *   GET    clientes.php?id=1                  -> detalle
- *   POST   clientes.php                       -> crear
- *   PUT    clientes.php?id=1                  -> editar
+ *   GET    clientes.php                      -> listar (?buscar= busca coincidencias en nombre, empresa
+ *  o correo, ?estado= filtra activo/pasivo , ?etapa= filtra por etapa_crm)
+ *   GET    clientes.php?id=1                  -> detalle: busca y regresa los datos de un solo cliente
+ *   POST   clientes.php                       -> crea al cliente
+ *   PUT    clientes.php?id=1                  -> edita cliente
  *   PUT    clientes.php?id=1&accion=etapa     -> cambiar etapa_crm
- *   DELETE clientes.php?id=1                  -> borrar
+ *   DELETE clientes.php?id=1                  -> borra cliente
  */
 require_once __DIR__ . '/../config/cors.php';
 
