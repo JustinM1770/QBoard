@@ -5,17 +5,16 @@
 USE crm_negocios2;
 
 CREATE TABLE IF NOT EXISTS productos (
-  id                   INT AUTO_INCREMENT PRIMARY KEY,
-  nombre               VARCHAR(100) NOT NULL,
-  descripcion          TEXT,
-  categoria            VARCHAR(80),
-  stock_actual         INT NOT NULL DEFAULT 0,
-  stock_minimo         INT NOT NULL DEFAULT 0,
-  proveedor_id         INT,
-  costo_unitario       DECIMAL(10,2) NOT NULL DEFAULT 0,
-  estrategia_logistica ENUM('PUSH','PULL') NOT NULL DEFAULT 'PUSH',
-  FOREIGN KEY (proveedor_id) REFERENCES proveedores(id)
-) ENGINE=InnoDB;
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(120) NOT NULL,
+  descripcion VARCHAR(255) DEFAULT '',
+  categoria VARCHAR(80) DEFAULT '',
+  stock_actual INT NOT NULL DEFAULT 0,
+  stock_minimo INT NOT NULL DEFAULT 0,
+  proveedor_id INT NULL,
+  costo_unitario DECIMAL(10,2) NOT NULL DEFAULT 0,
+  estrategia_logistica ENUM('PUSH','PULL') NOT NULL DEFAULT 'PUSH'
+);
 
 INSERT INTO productos (nombre, descripcion, categoria, stock_actual, stock_minimo, proveedor_id, costo_unitario, estrategia_logistica) VALUES
   ('Vasija de barro',   'Vasija artesanal de barro',   'Cerámica',   25, 10, 3, 120.00, 'PUSH'),
