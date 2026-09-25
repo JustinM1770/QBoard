@@ -24,6 +24,21 @@ try {
         if (!$p) json_out(['error' => 'No encontrado'], 404);
         json_out($p);
     }
+    if ($m === 'PUT' && $id !== null) {
+        $d = body();
+        db()->prepare("UPDATE productos SET nombre=?, descripcion=?, categoria=?, stock_actual=?, stock_minimo=?, proveedor_id=?, costo_unitario=? WHERE id=?")
+            ->execute([
+                trim($d['nombre'] ?? ''), trim($d['descripcion'] ?? ''), trim($d['categoria'] ?? ''),
+                (int)($d['stock_actual'] ?? 0), (int)($d['stock_minimo'] ?? 0),
+                !empty($d['proveedor_id']) ? (int)$d['proveedor_id'] : null,
+                round((float)($d['costo_unitario'] ?? 0), 2), $id,
+            ]);
+        json_out(['ok' => true]);
+    }
+    if ($m === 'DELETE' && $id !== null) {
+        db()->prepare("DELETE FROM productos WHERE id = ?")->execute([$id]);
+        json_out(['ok' => true]);
+    }
     if ($m === 'GET') {
         $where = []; $args = [];
         if (($b = trim($_GET['buscar'] ?? '')) !== '') { $where[] = "p.nombre LIKE ?"; $args[] = "%$b%"; }
