@@ -24,6 +24,12 @@ try {
         if (!$p) json_out(['error' => 'No encontrado'], 404);
         json_out($p);
     }
+    if ($m === 'PUT' && ($_GET['accion'] ?? '') === 'estrategia') {
+        $d = body();
+        if (!in_array($d['estrategia_logistica'] ?? '', ['PUSH','PULL'], true)) json_out(['error' => 'Estrategia invalida'], 400);
+        db()->prepare("UPDATE productos SET estrategia_logistica = ? WHERE id = ?")->execute([$d['estrategia_logistica'], $id]);
+        json_out(['ok' => true]);
+    }
     if ($m === 'PUT' && $id !== null) {
         $d = body();
         db()->prepare("UPDATE productos SET nombre=?, descripcion=?, categoria=?, stock_actual=?, stock_minimo=?, proveedor_id=?, costo_unitario=? WHERE id=?")
