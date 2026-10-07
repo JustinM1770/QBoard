@@ -5,8 +5,8 @@ $m = $_SERVER['REQUEST_METHOD'];
 
 try {
 
-    // Registrar un movimiento de inventario
     if ($m === 'POST') {
+
         $b = body();
 
         $producto_id = (int)($b['producto_id'] ?? 0);
@@ -48,9 +48,61 @@ try {
             $producto_id
         ]);
 
-        json_out(['ok' => true]);
-    }
+        // Regla PUSH: generar pedido automático cuando el stock llega al mínimo
+        $pedido_auto = false;
 
+        $prod = db()->prepare(
+            "SELECT stock_actual, stock_minimo, estrategia_logistica
+            FROM productos
+            WHERE id = ?"
+        );
+
+        $prod->execute([$producto_id]);
+        $producto = $prod->fetch();
+
+        if (
+            $producto &&
+            (int)$producto['stock_actual'] <= (int)$producto['stock_minimo'] &&
+            $producto['estrategia_logistica'] === 'PUSH'
+        ) {
+            $ya = db()->prepare(
+                "SELECT id
+                FROM pedidos
+                WHERE producto_id = ?
+                AND tipo = 'reposicion'
+                AND estado = 'pendiente'"
+            );
+
+            $ya->execute([$producto_id]);
+
+            if (!$ya->fetch()) {
+
+                $cantRepo = max(
+                    (int)$producto['stock_minimo'] * 2,
+                    10
+                );
+
+                db()->prepare(
+                    "INSERT INTO pedidos
+                    (producto_id, cantidad, tipo, estado)
+                    VALUES (?, ?, 'reposicion', 'pendiente')"
+                )->execute([
+                    $producto_id,
+                    $cantRepo
+                ]);
+
+                $pedido_auto = true;
+            }
+        }
+
+        $stock_actual = (int)$producto['stock_actual'];
+
+        json_out([
+            'ok' => true,
+            'stock_actual' => $stock_actual,
+            'pedido_automatico' => $pedido_auto
+        ]);
+    }
 
     // Consultar historial de movimientos de un producto
     if ($m === 'GET' && isset($_GET['producto_id'])) {
@@ -69,7 +121,6 @@ try {
 
         json_out($st->fetchAll());
     }
-
 
     // Consultar inventario general y detectar stock bajo
     if ($m === 'GET') {
@@ -91,7 +142,6 @@ try {
 
         json_out($rows);
     }
-
 
     json_out(['error' => 'Metodo no permitido'], 405);
 
