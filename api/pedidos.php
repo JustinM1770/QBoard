@@ -112,6 +112,75 @@ try {
     }
 
 
+    // Cambiar estado de pedido
+    // Al marcar como recibido, se suma la cantidad al stock
+    if ($m === 'PUT' && $id !== null) {
+
+        $nuevo = $_GET['estado'] ?? (body()['estado'] ?? '');
+
+        if (!in_array($nuevo, $ESTADOS, true)) {
+            json_out(['error' => 'Estado invalido'], 400);
+        }
+
+        $st = db()->prepare(
+            "SELECT * FROM pedidos WHERE id = ?"
+        );
+
+        $st->execute([$id]);
+
+        $ped = $st->fetch();
+
+        if (!$ped) {
+            json_out(['error' => 'Pedido no encontrado'], 404);
+        }
+
+        $sumado = false;
+
+        // Si el pedido pasa a recibido, actualizar stock
+        if (
+            $nuevo === 'recibido' &&
+            $ped['estado'] !== 'recibido'
+        ) {
+
+            db()->prepare(
+                "UPDATE productos
+                SET stock_actual = stock_actual + ?
+                WHERE id = ?"
+            )->execute([
+                (int)$ped['cantidad'],
+                (int)$ped['producto_id']
+            ]);
+
+            // Registrar entrada en movimientos
+            db()->prepare(
+                "INSERT INTO movimientos_inventario
+                (producto_id, tipo, cantidad, motivo)
+                VALUES (?, 'entrada', ?, 'compra')"
+            )->execute([
+                (int)$ped['producto_id'],
+                (int)$ped['cantidad']
+            ]);
+
+            $sumado = true;
+        }
+
+        // Actualizar estado del pedido
+        db()->prepare(
+            "UPDATE pedidos
+            SET estado = ?
+            WHERE id = ?"
+        )->execute([
+            $nuevo,
+            $id
+        ]);
+
+        json_out([
+            'ok' => true,
+            'stock_actualizado' => $sumado
+        ]);
+    }
+
+
     json_out(['error' => 'Metodo no permitido'], 405);
 
 } catch (Throwable $e) {
